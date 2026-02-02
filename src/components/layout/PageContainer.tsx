@@ -1,0 +1,19 @@
+import { ReactNode } from 'react'
+
+interface PageContainerProps {
+  children: ReactNode
+  className?: string
+  narrow?: boolean
+}
+
+export default function PageContainer({
+  children,
+  className = '',
+  narrow = false
+}: PageContainerProps) {
+  return (
+    <div className={`${narrow ? 'max-w-3xl' : 'max-w-7xl'} mx-auto px-4 py-8 ${className}`}>
+      {children}
+    </div>
+  )
+}
