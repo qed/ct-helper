@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { createContext, useContext, ReactNode } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { Interaction } from './data/interactions'
-import Header from './components/layout/Header'
-import Footer from './components/layout/Footer'
+import { Header } from './components/layout/Header'
+import { Footer } from './components/layout/Footer'
+import { Sidebar } from './components/layout/Sidebar'
 import Home from './pages/Home'
 import Campaigns from './pages/Campaigns'
 import CampaignDetail from './pages/CampaignDetail'
@@ -63,25 +64,84 @@ function AppProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// Public layout with Header + Footer
+function PublicLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <main className="flex-1">
+        {children}
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+// Admin layout with Header + Sidebar (no footer)
+function AdminLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-1 p-6 overflow-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  )
+}
+
+// Protected route wrapper
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { isLoggedIn } = useAppContext()
+  const location = useLocation()
+
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  return <>{children}</>
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+      <Route path="/campaigns" element={<PublicLayout><Campaigns /></PublicLayout>} />
+      <Route path="/campaigns/:id" element={<PublicLayout><CampaignDetail /></PublicLayout>} />
+      <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+
+      {/* Admin Routes (Protected) */}
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <AdminLayout><Dashboard /></AdminLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/crm" element={
+        <ProtectedRoute>
+          <AdminLayout><CRM /></AdminLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/crm/contacts/:id" element={
+        <ProtectedRoute>
+          <AdminLayout><ContactDetailPage /></AdminLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/crm/follow-ups" element={
+        <ProtectedRoute>
+          <AdminLayout><FollowUps /></AdminLayout>
+        </ProtectedRoute>
+      } />
+    </Routes>
+  )
+}
+
 function App() {
   return (
     <AppProvider>
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/campaigns" element={<Campaigns />} />
-            <Route path="/campaigns/:id" element={<CampaignDetail />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/crm" element={<CRM />} />
-            <Route path="/crm/contacts/:id" element={<ContactDetailPage />} />
-            <Route path="/crm/follow-ups" element={<FollowUps />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <AppRoutes />
     </AppProvider>
   )
 }

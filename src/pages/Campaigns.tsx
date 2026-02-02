@@ -1,7 +1,16 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
 import { campaigns } from '../data/campaigns'
-import PageContainer from '../components/layout/PageContainer'
-import CampaignCard from '../components/letter-writer/CampaignCard'
+import { Button } from '../components/ui/Button'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'
 
 type FilterLevel = 'all' | 'municipal' | 'provincial' | 'federal'
 
@@ -20,47 +29,87 @@ export default function Campaigns() {
   ]
 
   return (
-    <div className="bg-white/95 min-h-screen">
-    <PageContainer>
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-ct-navy mb-4">
-          Take Action
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Choose a campaign and make your voice heard. Every letter makes a difference.
-        </p>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        {filters.map((f) => (
-          <button
-            key={f.value}
-            onClick={() => setFilter(f.value)}
-            className={`px-4 py-2 rounded-full font-medium transition-colors min-h-[44px] ${
-              filter === f.value
-                ? 'bg-ct-navy text-white'
-                : 'bg-white text-ct-navy hover:bg-gray-100'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Campaign Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCampaigns.map((campaign) => (
-          <CampaignCard key={campaign.id} campaign={campaign} />
-        ))}
-      </div>
-
-      {filteredCampaigns.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No campaigns found for this filter.</p>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="font-serif text-4xl font-bold text-primary mb-4">
+            Take Action
+          </h1>
+          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+            Choose a campaign and make your voice heard. Every letter makes a difference.
+          </p>
         </div>
-      )}
-    </PageContainer>
+
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {filters.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setFilter(f.value)}
+              className={`px-5 py-2.5 rounded-full font-medium transition-colors min-h-[44px] ${
+                filter === f.value
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'bg-white text-text-primary border border-gray-200 hover:border-primary hover:text-primary'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Campaign Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredCampaigns.map((campaign) => (
+            <Card
+              key={campaign.id}
+              className="flex flex-col h-full hover:shadow-lg transition-shadow border-t-4 border-t-primary"
+            >
+              <CardHeader>
+                <div className="flex justify-between items-start mb-2">
+                  <Badge
+                    variant={campaign.status === 'active' ? 'success' : 'secondary'}
+                    className="mb-2 capitalize"
+                  >
+                    {campaign.status}
+                  </Badge>
+                  <Badge variant="outline" className="capitalize">
+                    {campaign.level}
+                  </Badge>
+                </div>
+                <CardTitle className="text-xl mb-2">{campaign.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-text-secondary line-clamp-3 mb-4">
+                  {campaign.description}
+                </p>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-light">
+                    {campaign.lettersSent} letters sent
+                  </span>
+                  <span className="text-text-light">
+                    {campaign.recipients.length} recipient{campaign.recipients.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Link to={`/campaigns/${campaign.id}`} className="w-full">
+                  <Button fullWidth className="group">
+                    Write Letter
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+
+        {filteredCampaigns.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-text-secondary text-lg">No campaigns found for this filter.</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -1,166 +1,178 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, User, LogOut } from 'lucide-react'
+import { Menu, X, User, HeartHandshake, LogOut } from 'lucide-react'
+import { Button } from '../ui/Button'
+import { cn } from '../../lib/utils'
 import { useAppContext } from '../../App'
 
-export default function Header() {
+export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { isLoggedIn, setIsLoggedIn } = useAppContext()
   const location = useLocation()
+  const { isLoggedIn, setIsLoggedIn } = useAppContext()
 
-  const publicLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/campaigns', label: 'Take Action' },
-  ]
+  const isAdminSection =
+    location.pathname.startsWith('/dashboard') ||
+    location.pathname.startsWith('/crm') ||
+    location.pathname === '/login'
 
-  const staffLinks = [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/crm', label: 'CRM' },
-    { to: '/crm/follow-ups', label: 'Follow-ups' },
-  ]
-
-  const isActive = (path: string) => location.pathname === path
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
   const handleLogout = () => {
     setIsLoggedIn(false)
     setIsMenuOpen(false)
   }
 
-  return (
-    <header className="bg-ct-navy/95 backdrop-blur-sm text-white sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-ct-gold rounded-lg flex items-center justify-center">
-              <span className="font-bold text-ct-navy text-sm">CT</span>
-            </div>
-            <span className="font-bold text-lg hidden sm:block">CT Helper</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {publicLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`py-2 transition-colors ${
-                  isActive(link.to)
-                    ? 'text-ct-gold'
-                    : 'text-white hover:text-ct-gold'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            {isLoggedIn && (
-              <>
-                <div className="w-px h-6 bg-white bg-opacity-30" />
-                {staffLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className={`py-2 transition-colors ${
-                      isActive(link.to)
-                        ? 'text-ct-gold'
-                        : 'text-white hover:text-ct-gold'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </>
-            )}
-
-            {isLoggedIn ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-2 px-4 py-2 bg-ct-gold text-ct-navy rounded-lg font-semibold hover:bg-opacity-90 transition-colors"
-              >
-                <User className="w-4 h-4" />
-                <span>Staff Login</span>
-              </Link>
-            )}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-white border-opacity-20">
-            {publicLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={() => setIsMenuOpen(false)}
-                className={`block py-3 px-2 rounded-lg transition-colors ${
-                  isActive(link.to)
-                    ? 'bg-ct-gold text-ct-navy'
-                    : 'hover:bg-white hover:bg-opacity-10'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            {isLoggedIn && (
-              <>
-                <div className="my-2 border-t border-white border-opacity-20" />
-                <p className="px-2 py-1 text-sm text-white text-opacity-60">Staff</p>
-                {staffLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`block py-3 px-2 rounded-lg transition-colors ${
-                      isActive(link.to)
-                        ? 'bg-ct-gold text-ct-navy'
-                        : 'hover:bg-white hover:bg-opacity-10'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </>
-            )}
-
-            <div className="my-2 border-t border-white border-opacity-20" />
-            {isLoggedIn ? (
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-2 py-3 px-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 py-3 px-2 rounded-lg bg-ct-gold text-ct-navy font-semibold"
-              >
-                <User className="w-4 h-4" />
-                <span>Staff Login</span>
-              </Link>
-            )}
-          </nav>
+  const NavLink = ({
+    to,
+    children,
+    mobile = false
+  }: {
+    to: string
+    children: React.ReactNode
+    mobile?: boolean
+  }) => {
+    const isActive = location.pathname === to
+    return (
+      <Link
+        to={to}
+        className={cn(
+          'font-medium transition-colors hover:text-primary',
+          mobile ? 'block py-3 text-lg border-b border-gray-100' : 'text-sm',
+          isActive ? 'text-primary font-bold' : 'text-text-primary'
         )}
+        onClick={() => mobile && setIsMenuOpen(false)}
+      >
+        {children}
+      </Link>
+    )
+  }
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="bg-primary text-white p-1.5 rounded-md group-hover:bg-primary-hover transition-colors">
+            <HeartHandshake size={24} />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-serif font-bold text-lg leading-none text-primary">
+              CT Helper
+            </span>
+            <span className="text-[10px] uppercase tracking-wider text-text-secondary">
+              The Common Table
+            </span>
+          </div>
+        </Link>
+
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-8">
+          {isAdminSection && isLoggedIn ? (
+            <>
+              <NavLink to="/dashboard">Dashboard</NavLink>
+              <NavLink to="/crm">CRM</NavLink>
+              <NavLink to="/crm/follow-ups">Follow-ups</NavLink>
+              <div className="h-6 w-px bg-gray-200 mx-2" />
+              <Link
+                to="/"
+                className="text-sm text-text-secondary hover:text-primary"
+              >
+                Public Site
+              </Link>
+              <div className="flex items-center gap-2 ml-2">
+                <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                  <User size={16} />
+                </div>
+                <span className="text-sm font-medium">Staff</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/campaigns">Take Action</NavLink>
+              {isLoggedIn ? (
+                <Link to="/dashboard">
+                  <Button variant="outline" size="sm">
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/login">
+                  <Button variant="outline" size="sm">
+                    Staff Login
+                  </Button>
+                </Link>
+              )}
+            </>
+          )}
+        </nav>
+
+        {/* Mobile Menu Toggle */}
+        <button
+          className="md:hidden p-2 text-text-primary min-h-[44px] min-w-[44px] flex items-center justify-center"
+          onClick={toggleMenu}
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
+
+      {/* Mobile Nav */}
+      {isMenuOpen && (
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg p-4 flex flex-col">
+          {isAdminSection && isLoggedIn ? (
+            <>
+              <NavLink to="/dashboard" mobile>
+                Dashboard
+              </NavLink>
+              <NavLink to="/crm" mobile>
+                CRM
+              </NavLink>
+              <NavLink to="/crm/follow-ups" mobile>
+                Follow-ups
+              </NavLink>
+              <NavLink to="/" mobile>
+                Back to Public Site
+              </NavLink>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 py-3 text-lg text-red-600 hover:text-red-700"
+              >
+                <LogOut size={20} />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/" mobile>
+                Home
+              </NavLink>
+              <NavLink to="/campaigns" mobile>
+                Take Action
+              </NavLink>
+              <div className="pt-4">
+                {isLoggedIn ? (
+                  <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                    <Button fullWidth>Dashboard</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                    <Button fullWidth>Staff Login</Button>
+                  </Link>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </header>
   )
 }
+
+export default Header

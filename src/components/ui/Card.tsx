@@ -1,48 +1,82 @@
-import { ReactNode } from 'react'
+import React from 'react'
+import { cn } from '../../lib/utils'
 
-interface CardProps {
-  children: ReactNode
-  className?: string
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hover?: boolean
-  onClick?: () => void
 }
 
-export default function Card({ children, className = '', hover = false, onClick }: CardProps) {
+export function Card({
+  className,
+  children,
+  hover,
+  ...props
+}: CardProps) {
   return (
     <div
-      className={`bg-white rounded-xl shadow-md p-6 transition-shadow ${
-        hover ? 'hover:shadow-lg cursor-pointer' : ''
-      } ${className}`}
-      onClick={onClick}
+      className={cn(
+        'rounded-lg border border-gray-200 bg-white text-text-primary shadow-card',
+        hover && 'transition-all hover:shadow-md hover:border-gray-300',
+        className
+      )}
+      {...props}
     >
       {children}
     </div>
   )
 }
 
-interface CardHeaderProps {
-  children: ReactNode
-  className?: string
+export function CardHeader({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn('flex flex-col space-y-1.5 p-6', className)} {...props}>
+      {children}
+    </div>
+  )
 }
 
-export function CardHeader({ children, className = '' }: CardHeaderProps) {
-  return <div className={`mb-4 ${className}`}>{children}</div>
+export function CardTitle({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3
+      className={cn(
+        'font-serif text-2xl font-semibold leading-none tracking-tight text-primary',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </h3>
+  )
 }
 
-interface CardTitleProps {
-  children: ReactNode
-  className?: string
+export function CardContent({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn('p-6 pt-0', className)} {...props}>
+      {children}
+    </div>
+  )
 }
 
-export function CardTitle({ children, className = '' }: CardTitleProps) {
-  return <h3 className={`text-xl font-bold text-ct-navy ${className}`}>{children}</h3>
+export function CardFooter({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn('flex items-center p-6 pt-0', className)} {...props}>
+      {children}
+    </div>
+  )
 }
 
-interface CardContentProps {
-  children: ReactNode
-  className?: string
-}
-
-export function CardContent({ children, className = '' }: CardContentProps) {
-  return <div className={className}>{children}</div>
-}
+export default Card

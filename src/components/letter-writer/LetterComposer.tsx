@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Campaign } from '../../data/campaigns'
 import { Recipient } from '../../data/recipients'
-import { Input, Textarea } from '../ui/Input'
+import { Input } from '../ui/Input'
+import { Textarea } from '../ui/Textarea'
 import Button from '../ui/Button'
 import { useAppContext } from '../../App'
 
@@ -49,7 +50,7 @@ export default function LetterComposer({
       <Textarea
         label="Your Letter"
         value={letterText}
-        onChange={(e) => setLetterText(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setLetterText(e.target.value)}
         className="min-h-[300px] font-mono text-sm"
       />
 

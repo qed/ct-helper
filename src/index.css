@@ -7,43 +7,38 @@ html {
 }
 
 body {
-  @apply text-ct-navy antialiased;
-  background-image: url('https://theredeemer.ca/wp-content/themes/TheRedeemer2017/assets/images/background.jpg');
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  @apply bg-background text-text-primary antialiased;
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-ct-navy text-white px-6 py-3 rounded-lg font-semibold
-           hover:bg-opacity-90 transition-all duration-200
+    @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold
+           hover:bg-primary-hover transition-all duration-200
            active:scale-95 touch-manipulation
            min-h-[44px] min-w-[44px];
   }
 
   .btn-secondary {
-    @apply bg-ct-teal text-white px-6 py-3 rounded-lg font-semibold
-           hover:bg-opacity-90 transition-all duration-200
+    @apply bg-secondary text-white px-6 py-3 rounded-lg font-semibold
+           hover:bg-secondary-hover transition-all duration-200
            active:scale-95 touch-manipulation
            min-h-[44px] min-w-[44px];
   }
 
   .btn-accent {
-    @apply bg-ct-gold text-ct-navy px-6 py-3 rounded-lg font-semibold
-           hover:bg-opacity-90 transition-all duration-200
+    @apply bg-accent text-text-primary px-6 py-3 rounded-lg font-semibold
+           hover:bg-accent-hover transition-all duration-200
            active:scale-95 touch-manipulation
            min-h-[44px] min-w-[44px];
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-md p-6 transition-shadow hover:shadow-lg;
+    @apply bg-white rounded-xl shadow-card p-6 transition-shadow hover:shadow-lg;
   }
 
   .input-field {
     @apply w-full px-4 py-3 rounded-lg border border-gray-300
-           focus:border-ct-teal focus:ring-2 focus:ring-ct-teal focus:ring-opacity-20
+           focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20
            outline-none transition-all duration-200
            min-h-[44px];
   }

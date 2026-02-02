@@ -19,16 +19,16 @@ const colorMap: Record<InteractionType, string> = {
   email: 'bg-blue-100 text-blue-600',
   phone: 'bg-green-100 text-green-600',
   meeting: 'bg-purple-100 text-purple-600',
-  event: 'bg-ct-gold bg-opacity-30 text-ct-clay',
-  donation: 'bg-ct-moss bg-opacity-30 text-ct-moss',
-  letter: 'bg-ct-teal bg-opacity-30 text-ct-teal',
+  event: 'bg-accent/30 text-accent-hover',
+  donation: 'bg-secondary/20 text-secondary',
+  letter: 'bg-primary/20 text-primary',
   other: 'bg-gray-100 text-gray-600'
 }
 
 export default function InteractionTimeline({ interactions }: InteractionTimelineProps) {
   if (interactions.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-text-secondary">
         No interactions recorded yet.
       </div>
     )
@@ -51,11 +51,11 @@ export default function InteractionTimeline({ interactions }: InteractionTimelin
             <div className="flex-1 pb-4">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <span className="font-medium text-ct-navy">
+                  <span className="font-medium text-text-primary">
                     {interactionTypeLabels[interaction.type]}
                   </span>
-                  <span className="text-gray-400 mx-2">·</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-text-light mx-2">·</span>
+                  <span className="text-sm text-text-secondary">
                     {new Date(interaction.date).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
@@ -64,8 +64,8 @@ export default function InteractionTimeline({ interactions }: InteractionTimelin
                   </span>
                 </div>
               </div>
-              <p className="text-gray-600 mt-1">{interaction.notes}</p>
-              <p className="text-sm text-gray-400 mt-1">by {interaction.staffName}</p>
+              <p className="text-text-secondary mt-1">{interaction.notes}</p>
+              <p className="text-sm text-text-light mt-1">by {interaction.staffName}</p>
             </div>
           </div>
         )

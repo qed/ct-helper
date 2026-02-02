@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 import { X } from 'lucide-react'
+import { cn } from '../../lib/utils'
 
 interface ModalProps {
   isOpen: boolean
@@ -55,14 +56,17 @@ export default function Modal({
         onClick={onClose}
       />
       <div
-        className={`relative bg-white rounded-xl shadow-xl w-full ${sizes[size]} max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200`}
+        className={cn(
+          'relative bg-white rounded-xl shadow-xl w-full max-h-[90vh] overflow-y-auto',
+          sizes[size]
+        )}
       >
         {title && (
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-xl font-bold text-ct-navy">{title}</h2>
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h2 className="font-serif text-xl font-semibold text-primary">{title}</h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center text-text-secondary hover:text-text-primary"
             >
               <X className="w-5 h-5" />
             </button>

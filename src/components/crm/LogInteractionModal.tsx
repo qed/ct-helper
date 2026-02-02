@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { InteractionType, interactionTypeLabels } from '../../data/interactions'
 import Modal from '../ui/Modal'
-import { Input, Textarea } from '../ui/Input'
-import Button from '../ui/Button'
+import { Input } from '../ui/Input'
+import { Textarea } from '../ui/Textarea'
+import { Button } from '../ui/Button'
 
 interface LogInteractionModalProps {
   isOpen: boolean
@@ -41,18 +42,18 @@ export default function LogInteractionModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Log Interaction" size="md">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-text-secondary">
           Recording interaction with <strong>{contactName}</strong>
         </p>
 
         <div>
-          <label className="block text-sm font-medium text-ct-navy mb-1">
+          <label className="block text-sm font-medium text-text-primary mb-1.5">
             Interaction Type
           </label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value as InteractionType)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-ct-teal focus:ring-2 focus:ring-ct-teal focus:ring-opacity-20 outline-none transition-all min-h-[44px]"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 outline-none transition-all min-h-[40px] text-sm"
           >
             {interactionTypes.map(([value, label]) => (
               <option key={value} value={value}>
@@ -91,7 +92,6 @@ export default function LogInteractionModal({
           </Button>
           <Button
             type="submit"
-            variant="primary"
             className="flex-1"
             disabled={!notes.trim() || !staffName.trim()}
           >

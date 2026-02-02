@@ -1,36 +1,61 @@
-import { ReactNode } from 'react'
+import React from 'react'
+import { cn } from '../../lib/utils'
 
-interface BadgeProps {
-  children: ReactNode
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info'
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  variant?:
+    | 'default'
+    | 'secondary'
+    | 'outline'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'business'
+    | 'politician'
+    | 'media'
+    | 'partner'
+    | 'donor'
   size?: 'sm' | 'md'
-  className?: string
 }
 
-export default function Badge({
-  children,
+export function Badge({
+  className,
   variant = 'default',
   size = 'md',
-  className = ''
+  ...props
 }: BadgeProps) {
   const variants = {
-    default: 'bg-gray-100 text-gray-700',
-    success: 'bg-ct-moss bg-opacity-20 text-ct-moss',
-    warning: 'bg-ct-gold bg-opacity-20 text-ct-clay',
-    danger: 'bg-red-100 text-red-700',
-    info: 'bg-ct-teal bg-opacity-20 text-ct-teal',
+    default: 'bg-primary text-white',
+    secondary: 'bg-secondary text-white',
+    outline: 'text-text-primary border border-gray-300 bg-transparent',
+    success: 'bg-green-100 text-green-800 border-green-200',
+    warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    danger: 'bg-red-100 text-red-700 border-red-200',
+    info: 'bg-blue-100 text-blue-800 border-blue-200',
+    // Contact types
+    business: 'bg-blue-100 text-blue-800 border-blue-200',
+    politician: 'bg-purple-100 text-purple-800 border-purple-200',
+    media: 'bg-pink-100 text-pink-800 border-pink-200',
+    partner: 'bg-orange-100 text-orange-800 border-orange-200',
+    donor: 'bg-emerald-100 text-emerald-800 border-emerald-200'
   }
 
   const sizes = {
     sm: 'px-2 py-0.5 text-xs',
-    md: 'px-3 py-1 text-sm',
+    md: 'px-2.5 py-0.5 text-xs'
   }
 
   return (
     <span
-      className={`inline-flex items-center rounded-full font-medium ${variants[variant]} ${sizes[size]} ${className}`}
-    >
-      {children}
-    </span>
+      className={cn(
+        'inline-flex items-center rounded-full border font-semibold transition-colors',
+        variants[variant],
+        sizes[size],
+        className
+      )}
+      {...props}
+    />
   )
 }
+
+export default Badge
