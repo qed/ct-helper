@@ -9,7 +9,7 @@ export interface DashboardStats {
 
 export const dashboardStats: DashboardStats = {
   totalLettersSent: 247,
-  uniqueSupporters: 89,
+  uniqueSupporters: 93,
   activeCampaigns: 3,
   contactsInCRM: 42,
   interactionsThisMonth: 15,
